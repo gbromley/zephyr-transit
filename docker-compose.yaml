@@ -1,0 +1,16 @@
+
+services:
+  postgres:
+    image: postgres
+    container_name: zephyr-postgres
+    environment:
+      POSTGRES_DB: zephyr_transit
+      POSTGRES_USER: zephyr
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-zephyr_password}  
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
