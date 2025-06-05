@@ -8,6 +8,7 @@ from .base import Base
 
 class Source(Base):
     """A DOT data source"""
+
     __tablename__ = 'sources'
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

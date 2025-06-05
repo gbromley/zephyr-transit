@@ -1,7 +1,6 @@
 from datetime import datetime
-from typing import List
 
-from sqlalchemy import REAL, BigInteger, DateTime, ForeignKey, String
+from sqlalchemy import REAL, BigInteger, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -16,7 +15,5 @@ class Observation(Base):
     time: Mapped[datetime] = mapped_column(DateTime(timezone=False), nullable=False)
     value: Mapped[float] = mapped_column(REAL, nullable=True)
 
-    station: Mapped["Station"] = relationship("Station", back_populates='observations')
-    variable: Mapped["Variable"] = relationship("Variable", back_populates='observations')
-
-    
+    station: Mapped['Station'] = relationship('Station', back_populates='observations')
+    variable: Mapped['Variable'] = relationship('Variable', back_populates='observations')
