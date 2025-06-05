@@ -5,7 +5,9 @@ exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]  # Error, pyflakes, warnings, isort
-ignore = []
+ignore = [
+    "F821",  # Undefined name (for SQLAlchemy string relationships)
+]
 
 [tool.ruff.format]
 quote-style = "single"
