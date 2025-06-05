@@ -36,7 +36,7 @@ This module uses Alembic for database migrations.
 
 ### Setup
 
-1. Configure your database connection in `.env`:
+1. Configure the database connection in `.env`:
    ```
    DB_USER=your_user
    DB_PASSWORD=your_password
@@ -75,11 +75,6 @@ Required environment variables:
 1. Create model file in `models/`
 2. Import in `models/__init__.py`
 3. Generate migration: `alembic revision --autogenerate -m "Add new model"`
-4. Review and apply migration
+4. Review and apply migration using `alembic upgrade head`
 
-### Model Conventions
 
-- Use `Mapped[]` type annotations
-- Foreign keys end with `_id`
-- Relationships use `back_populates`
-- Primary keys use `BigInteger`
