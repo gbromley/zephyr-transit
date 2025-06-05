@@ -5,12 +5,9 @@ from alembic import context
 from dotenv import load_dotenv
 from sqlalchemy import engine_from_config, pool
 
-
 from zephyr_db.models import Base
 
-
 load_dotenv()
-
 
 
 # this is the Alembic Config object, which provides
