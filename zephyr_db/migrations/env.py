@@ -5,11 +5,13 @@ from alembic import context
 from dotenv import load_dotenv
 from sqlalchemy import engine_from_config, pool
 
-# Load environment variables
+
+from zephyr_db.models import Base
+
+
 load_dotenv()
 
-# Import your models
-from zephyr_db.models import Base
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
