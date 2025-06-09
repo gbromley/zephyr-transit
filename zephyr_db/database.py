@@ -21,7 +21,6 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-
 @contextmanager
 def zephyr_db_session():
     """Database session context manager"""

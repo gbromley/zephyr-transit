@@ -19,4 +19,4 @@ class Variable(Base):
         'StationVariable', back_populates='variable'
     )
 
-    observations = relationship("Observation", back_populates="variable")
+    observations = relationship('Observation', back_populates='variable')
