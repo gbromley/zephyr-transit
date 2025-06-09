@@ -2,8 +2,6 @@ import os
 
 import pytest
 
-os.environ['DB_NAME'] = 'zephyr_transit_test'
-
 from zephyr_db import engine
 from zephyr_db.database import SessionLocal
 from zephyr_db.models import Base
