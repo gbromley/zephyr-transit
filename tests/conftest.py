@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 from zephyr_db import engine
