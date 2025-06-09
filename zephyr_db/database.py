@@ -23,7 +23,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 @contextmanager
-def db_session():
+def zephyr_db_session():
     """Database session context manager"""
     session = SessionLocal()
     try:

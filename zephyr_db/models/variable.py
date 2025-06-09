@@ -18,3 +18,5 @@ class Variable(Base):
     station_variables: Mapped[List['StationVariable']] = relationship(
         'StationVariable', back_populates='variable'
     )
+
+    observations = relationship("Observation", back_populates="variable")
