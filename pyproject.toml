@@ -18,7 +18,6 @@ build-backend = "setuptools.build_meta"
 include = ["zephyr_db*", "zephyr_etl*"]
 
 [tool.pytest.ini_options]
-pythonpath = ["."]
 testpaths = ["tests"]
 
 [tool.ruff]

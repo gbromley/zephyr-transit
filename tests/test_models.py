@@ -17,3 +17,8 @@ def test_create_units(db_session):
 
 
 
+def test_verify_rollback(db_session):
+    
+    # This should find nothing from previous test
+    units = db_session.query(Unit).filter_by(name='test unit').all()
+    assert len(units) == 0 
