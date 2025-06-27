@@ -8,9 +8,9 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          DB_PASSWORD: postgres
-          DB_USER: postgres
-          DB_NAME: zephyr_transit_test
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_NAME: zephyr_transit_test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
