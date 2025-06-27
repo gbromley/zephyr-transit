@@ -1,10 +1,8 @@
-from zephyr_db.models import Unit, Station, Observation, Variable
-from zephyr_db.seed.variables import seed_variables
-from zephyr_db.seed.units import seed_units
+from zephyr_db.models import Unit
 
 
 def test_create_units(db_session):
-    unit = Unit(name='meters per second', symbol = 'm/s')
+    unit = Unit(name='meters per second', symbol='m/s')
     db_session.add(unit)
     db_session.commit()
 
@@ -16,4 +14,3 @@ def test_verify_rollback(db_session):
     # This should find nothing from previous test
     units = db_session.query(Unit).filter_by(name='meters per second').all()
     assert len(units) == 0
-

@@ -1,5 +1,4 @@
-from zephyr_db import zephyr_db_session, SessionLocal
-
+from zephyr_db import zephyr_db_session
 
 
 def seed_table(model, data: list[dict], session=None) -> None:
@@ -20,4 +19,3 @@ def _seed_data(session, model, data: list[dict]) -> None:
     if new_records:
         session.add_all(new_records)
         session.commit()
-
