@@ -48,5 +48,5 @@ jobs:
         
       - name: Test
         env:
-          DATABASE_URL=postgresql://postgres:postgres@localhost:5432/zephyr_transit_test
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/zephyr_transit_test
         run: pytest
