@@ -7,14 +7,18 @@ from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
+# Check for DATABASE_URL first (for CI/CD environments)
+DATABASE_URL = os.getenv('DATABASE_URL')
 
-DB_USER = os.getenv('POSTGRES_USER')
-DB_PASSWORD = os.getenv('POSTGRES_PASSWORD')
-DB_HOST = os.getenv('POSTGRES_HOST', 'localhost')
-DB_PORT = os.getenv('POSTGRES_PORT', '5432')
-DB_NAME = os.getenv('POSTGRES_NAME', 'zephyr_transit')
-
-DATABASE_URL = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+if not DATABASE_URL:
+    # Construct from individual variables (for local development)
+    DB_USER = os.getenv('POSTGRES_USER')
+    DB_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+    DB_HOST = os.getenv('POSTGRES_HOST', 'localhost')
+    DB_PORT = os.getenv('POSTGRES_PORT', '5432')
+    DB_NAME = os.getenv('POSTGRES_NAME', 'zephyr_transit')
+    
+    DATABASE_URL = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 
 # Database setup
 engine = create_engine(DATABASE_URL)
