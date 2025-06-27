@@ -11,6 +11,7 @@ class Unit(Base):
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     name: Mapped[str] = mapped_column(String)
+    symbol: Mapped[str] = mapped_column(String)
 
     # Relationship to variables
     variables: Mapped[List['Variable']] = relationship('Variable', back_populates='unit')

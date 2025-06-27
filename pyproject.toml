@@ -17,6 +17,12 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 include = ["zephyr_db*", "zephyr_etl*"]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+env = [
+    "DB_NAME = zephyr_transit_test"
+]
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"
