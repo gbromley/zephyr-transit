@@ -1,9 +1,23 @@
-name: CI
+name: Zephyr Transit Testing
 on: [push, pull_request]
 
 jobs:
   quality-checks:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: zephyr_transit_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v3
       
@@ -33,4 +47,6 @@ jobs:
         run: ruff check .
         
       - name: Test
+        env:
+          DATABASE_URL=postgresql://postgres:postgres@localhost:5432/zephyr_transit_test
         run: pytest
