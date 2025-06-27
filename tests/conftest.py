@@ -5,7 +5,7 @@ from zephyr_db.database import SessionLocal
 from zephyr_db.models import Base
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture()
 def db_engine():
     Base.metadata.create_all(engine)
     yield engine
