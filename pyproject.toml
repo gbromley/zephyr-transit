@@ -34,10 +34,16 @@ extend-exclude = [
 ]
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I"]  # Error, pyflakes, warnings, isort
+select = ["E", "F", "W", "I", "D"]  # Error, pyflakes, warnings, isort
 ignore = [
     "F821",  # Undefined name (for SQLAlchemy string relationships)
+    "D417", # disable documentation on every function parameter
+    "D100", #public module docstrings
+    "D104", #public package dosctring
 ]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.ruff.format]
 quote-style = "single"

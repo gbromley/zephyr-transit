@@ -5,5 +5,6 @@ from .utils import seed_table
 VARIABLES = [{'name': 'wind speed', 'unit': 'wind speed'}]
 
 
-def seed_variables(**VARIABLES) -> None:
+def seed_variables() -> None:
+    """Populate database with measurement variables."""
     seed_table(Variable, VARIABLES)
