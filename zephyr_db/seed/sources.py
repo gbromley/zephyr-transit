@@ -12,6 +12,5 @@ SOURCES = [
 
 
 def seed_sources() -> None:
-    """Adds our sources to a clean database"""
-
+    """Populate database with predefined data sources."""
     seed_table(Source, SOURCES)

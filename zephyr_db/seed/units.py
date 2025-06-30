@@ -6,6 +6,5 @@ UNITS = [{'name': 'wind speed', 'symbol': 'm/s'}]
 
 
 def seed_units() -> None:
-    """Seeds units to a clean database"""
-
+    """Populate database with measurement units."""
     seed_table(Unit, UNITS)

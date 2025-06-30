@@ -5,6 +5,11 @@ from zephyr_db.seed import seed_sources, seed_table, seed_units
 
 
 def test_seed_tables(db_session):
+    """Test generic table seeding functionality.
+    
+    Args:
+        db_session: Database session fixture.
+    """
     print(os.getenv('DB_NAME'))
 
     data_to_seed = {'name': 'miles per hour', 'symbol': 'mph'}
@@ -19,6 +24,11 @@ def test_seed_tables(db_session):
 
 
 def test_seed_sources(db_session):
+    """Test seeding of source data.
+    
+    Args:
+        db_session: Database session fixture.
+    """
     seed_sources()
     source_query = db_session.query(Source).first()
 
@@ -26,6 +36,11 @@ def test_seed_sources(db_session):
 
 
 def test_seed_units(db_session):
+    """Test seeding of unit data.
+    
+    Args:
+        db_session: Database session fixture.
+    """
     seed_units()
 
     unit_query = db_session.query(Unit).first()
@@ -34,6 +49,11 @@ def test_seed_units(db_session):
 
 
 def test_seed_variables(db_session):
+    """Test creation of variable with associated unit.
+    
+    Args:
+        db_session: Database session fixture.
+    """
     seed_units()
     unit = db_session.query(Unit).filter(Unit.name == 'wind speed').first()
 
