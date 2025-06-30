@@ -7,6 +7,8 @@ from .base import Base
 
 
 class Observation(Base):
+    """Weather observation data point."""
+
     __tablename__ = 'observations'
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)

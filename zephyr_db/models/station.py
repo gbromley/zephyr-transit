@@ -7,6 +7,8 @@ from .base import Base
 
 
 class Station(Base):
+    """Weather station location and metadata."""
+
     __tablename__ = 'stations'
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)

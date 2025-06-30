@@ -5,6 +5,8 @@ from .base import Base
 
 
 class StationVariable(Base):
+    """Mapping between stations and their measured variables."""
+
     __tablename__ = 'station_variables'
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)

@@ -7,6 +7,8 @@ from .base import Base
 
 
 class Unit(Base):
+    """Measurement unit definition."""
+
     __tablename__ = 'units'
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)

@@ -7,7 +7,7 @@ from .base import Base
 
 
 class Source(Base):
-    """A DOT data source"""
+    """A DOT data source."""
 
     __tablename__ = 'sources'
 

@@ -7,6 +7,8 @@ from .base import Base
 
 
 class Variable(Base):
+    """Measured weather variable type."""
+
     __tablename__ = 'variables'
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
