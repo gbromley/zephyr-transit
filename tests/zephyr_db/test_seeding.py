@@ -6,7 +6,7 @@ from zephyr_db.seed import seed_sources, seed_table, seed_units
 
 def test_seed_tables(db_session):
     """Test generic table seeding functionality.
-    
+
     Args:
         db_session: Database session fixture.
     """
@@ -25,7 +25,7 @@ def test_seed_tables(db_session):
 
 def test_seed_sources(db_session):
     """Test seeding of source data.
-    
+
     Args:
         db_session: Database session fixture.
     """
@@ -37,7 +37,7 @@ def test_seed_sources(db_session):
 
 def test_seed_units(db_session):
     """Test seeding of unit data.
-    
+
     Args:
         db_session: Database session fixture.
     """
@@ -50,7 +50,7 @@ def test_seed_units(db_session):
 
 def test_seed_variables(db_session):
     """Test creation of variable with associated unit.
-    
+
     Args:
         db_session: Database session fixture.
     """

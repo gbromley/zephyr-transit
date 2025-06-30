@@ -3,7 +3,7 @@ from zephyr_db import zephyr_db_session
 
 def seed_table(model, data: list[dict], session=None) -> None:
     """Seed database table with data, skipping duplicates by name.
-    
+
     Args:
         model: SQLAlchemy model class to seed.
         data: List of dictionaries containing record data.
@@ -20,7 +20,7 @@ def seed_table(model, data: list[dict], session=None) -> None:
 
 def _seed_data(session, model, data: list[dict]) -> None:
     """Insert new records into database, avoiding duplicates.
-    
+
     Args:
         session: Active database session.
         model: SQLAlchemy model class.

@@ -3,7 +3,7 @@ from zephyr_db.models import Unit
 
 def test_create_units(db_session):
     """Test creating and persisting a Unit model.
-    
+
     Args:
         db_session: Database session fixture.
     """
@@ -17,7 +17,7 @@ def test_create_units(db_session):
 
 def test_verify_rollback(db_session):
     """Verify test isolation through transaction rollback.
-    
+
     Args:
         db_session: Database session fixture.
     """

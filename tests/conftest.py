@@ -8,7 +8,7 @@ from zephyr_db.models import Base
 @pytest.fixture()
 def db_engine():
     """Provide a clean database engine for testing.
-    
+
     Yields:
         Engine: SQLAlchemy engine with fresh tables.
     """

@@ -28,10 +28,10 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 @contextmanager
 def zephyr_db_session():
     """Create a database session with automatic cleanup.
-    
+
     Yields:
         Session: SQLAlchemy database session.
-        
+
     Raises:
         Exception: Any database operation errors are re-raised after rollback.
     """
