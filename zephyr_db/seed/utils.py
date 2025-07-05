@@ -27,6 +27,7 @@ def _seed_data(session, model, data: list[dict]) -> None:
         data: List of dictionaries containing record data.
     """
     existing_names = {r.name for r in session.query(model.name)}
+    # Using name as duplication protection
     new_records = [model(**row) for row in data if row['name'] not in existing_names]
     if new_records:
         session.add_all(new_records)

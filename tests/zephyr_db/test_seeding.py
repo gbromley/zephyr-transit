@@ -64,3 +64,4 @@ def test_seed_variables(db_session):
     var = db_session.query(Variable).filter(Variable.name == 'average wind speed').first()
 
     assert var.name == wind_speed_var.name
+    assert var.unit_id == unit.id
