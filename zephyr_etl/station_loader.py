@@ -54,11 +54,6 @@ class StationLoader:
         Raises:
             ValueError: If required columns are missing from DataFrame.
         """
-        required_columns = {'name', 'source_id', 'latitude', 'longitude'}
-        if not required_columns.issubset(self.stations_df.columns):
-            missing = required_columns - set(self.stations_df.columns)
-            raise ValueError(f'Missing required columns: {missing}')
-
         df = self._stations_to_insert()
 
         if df.is_empty():
@@ -67,10 +62,13 @@ class StationLoader:
         with zephyr_db_session() as session:
             try:
                 data = df.to_dicts()
+                # Using stmt seems to be the sqlalchemy way
                 stmt = insert(Station).returning(Station)
                 result = session.scalars(stmt, data)
                 inserted_stations = result.all()
                 session.commit()
+                # Reset current stations cache
+                self._current_stations = None
                 return inserted_stations
             except Exception:
                 session.rollback()
