@@ -39,7 +39,7 @@ def test_station_insert(db_session, station_data):
 
 
 def test_insert_identifies_existing_stations(db_session, station_data):
-    """Test trying to insert twice"""
+    """Test trying to insert twice."""
     station_df = pl.DataFrame(station_data)
     # Insert a station
     StationLoader(station_df).insert_stations()
