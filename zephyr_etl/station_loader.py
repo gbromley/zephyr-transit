@@ -71,5 +71,7 @@ class StationLoader:
                 self._current_stations = None
                 return inserted_stations
             except Exception:
-                session.rollback()
+            # Only rollback if not already rolled back
+                if session.is_active:
+                    session.rollback()
                 raise
