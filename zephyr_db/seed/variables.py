@@ -3,8 +3,6 @@ import polars as pl
 from zephyr_db import zephyr_db_session
 from zephyr_db.models import Variable
 
-from .utils import seed_table
-
 VARIABLES = [
     {'name': 'wind speed', 'unit': 'wind speed'},
     {'name': 'wind direction', 'unit': 'wind dir'},
@@ -31,7 +29,8 @@ def seed_variables() -> None:
                     'unit_id': unit_id,
                 }
             )
-        
+
         # Use the same session for seeding to ensure consistency
         from .utils import _seed_data
+
         _seed_data(session, Variable, variables)
