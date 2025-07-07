@@ -1,6 +1,6 @@
 import pytest
 
-from zephyr_db import engine
+from zephyr_db import engine, set_session_context
 from zephyr_db.database import SessionLocal
 from zephyr_db.models import Base
 
@@ -31,9 +31,11 @@ def db_session(db_engine):
     transaction = connection.begin()
     session = SessionLocal(bind=connection)
 
-    try:
-        yield session
-    finally:
-        session.close()
-        transaction.rollback()
-        connection.close()
+    # Set the session in the context so all code uses this transaction
+    with set_session_context(session):
+        try:
+            yield session
+        finally:
+            session.close()
+            transaction.rollback()
+            connection.close()
