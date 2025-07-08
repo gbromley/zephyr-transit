@@ -27,7 +27,7 @@ Zephyr-transit will start with a simple milestone; acquiring the meteorological 
 
 #### ETL Pipeline
 
-- Beanm
+- Beam
 - Airflow 
 - Google Cloud Platform 
 
