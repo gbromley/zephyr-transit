@@ -24,12 +24,16 @@ class StationLoader:
         self.stations_df = df
         self._current_stations = None
 
-    def _get_current_stations(self):
-        """Get current stations from the database."""
+    def _get_current_stations(self) -> pl.DataFrame:
+        """Get current stations from the database with caching.
+
+        Returns:
+            DataFrame with columns [id, name] of existing stations
+        """
         if self._current_stations is None:
             with zephyr_db_session() as sess:
                 result = pl.read_database('SELECT id, name FROM stations', sess.connection())
-                # Fix the schema for empty tables
+                # Handle empty table case - polars needs explicit schema when no rows exist
                 if result.is_empty():
                     self._current_stations = pl.DataFrame(
                         {'id': [], 'name': []}, schema={'id': pl.Int64, 'name': pl.String}
@@ -39,7 +43,12 @@ class StationLoader:
 
         return self._current_stations
 
-    def _stations_to_insert(self):
+    def _stations_to_insert(self) -> pl.DataFrame:
+        """Identify new stations that don't exist in the database.
+
+        Returns:
+            DataFrame containing only stations not already in database
+        """
         """Compare existing to stations_df, return only new."""
         existing_stations = self._get_current_stations()
 
@@ -71,7 +80,7 @@ class StationLoader:
                 self._current_stations = None
                 return inserted_stations
             except Exception:
-                # Only rollback if not already rolled back
+                # Safely rollback transaction if still active
                 if session.is_active:
                     session.rollback()
                 raise
