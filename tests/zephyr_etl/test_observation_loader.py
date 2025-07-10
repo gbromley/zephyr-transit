@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import polars as pl
 import pytest
@@ -24,6 +24,7 @@ def station_df(db_session):
 
 @pytest.fixture
 def seeded_database(db_session):
+    """Database with sources, units, and variables seeded."""
     seed_sources()
     seed_units()
     seed_variables()
@@ -32,13 +33,15 @@ def seeded_database(db_session):
 
 @pytest.fixture
 def test_stations(seeded_database, station_df):
+    """Insert test stations and return their IDs."""
     stations = StationLoader(station_df).insert_stations()
     station_ids = [station.id for station in stations]
 
     return sorted(station_ids)
 
 
-def test_observation_insert(seeded_database, test_stations):
+def test_load_observations(seeded_database, test_stations):
+    """Test loading observations into database."""
     wind_speed_id = (
         seeded_database.query(Variable.id).filter(Variable.name == 'wind speed').scalar()
     )
@@ -65,7 +68,8 @@ def test_observation_insert(seeded_database, test_stations):
     assert obs_count == 2
 
 
-def test_insert_empty(seeded_database):
+def test_load_empty(seeded_database):
+    """Make sure loading empty dataframe does nothing."""
     ['station_id', 'variable_id', 'time', 'value']
     [pl.Int64, pl.Int64, pl.Datetime, pl.Float64]
     observations_df = pl.DataFrame(
@@ -85,3 +89,36 @@ def test_insert_empty(seeded_database):
 
     obs_count = seeded_database.query(Observation).count()
     assert obs_count == 0
+
+
+def test_chunking_large_dataset(seeded_database, test_stations):
+    """Test that large datasets are properly chunked."""
+    n_obs = 12000
+    wind_speed_id = (
+        seeded_database.query(Variable.id).filter(Variable.name == 'wind speed').scalar()
+    )
+
+    # Create unique timestamps for each observation
+    base_time = datetime.now()
+    timestamps = [base_time + timedelta(seconds=i) for i in range(n_obs)]
+
+    observations_df = pl.DataFrame(
+        {
+            'station_id': [test_stations[0]] * n_obs,
+            'variable_id': [wind_speed_id] * n_obs,
+            'time': timestamps,
+            'value': list(range(n_obs)),  # Different values to verify, casted to float using schema
+        },
+        schema={
+            'station_id': pl.Int64,
+            'variable_id': pl.Int64,
+            'time': pl.Datetime,
+            'value': pl.Float64,
+        },
+    )
+
+    loader = ObservationLoader(observations_df, chunksize=5000)
+    inserted = loader.load()
+
+    assert inserted == n_obs
+    assert seeded_database.query(Observation).count() == n_obs
