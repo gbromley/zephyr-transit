@@ -13,7 +13,7 @@ VARIABLES = [
 
 def seed_variables() -> None:
     """Populate database with measurement variables.
-    
+
     Links variables to their corresponding units by querying the units table
     and building relationships based on unit names.
     """

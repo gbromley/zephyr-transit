@@ -26,7 +26,7 @@ class StationLoader:
 
     def _get_current_stations(self) -> pl.DataFrame:
         """Get current stations from the database with caching.
-        
+
         Returns:
             DataFrame with columns [id, name] of existing stations
         """
@@ -45,7 +45,7 @@ class StationLoader:
 
     def _stations_to_insert(self) -> pl.DataFrame:
         """Identify new stations that don't exist in the database.
-        
+
         Returns:
             DataFrame containing only stations not already in database
         """

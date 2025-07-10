@@ -15,7 +15,7 @@ _session_context: ContextVar[Optional[Session]] = ContextVar('_session_context',
 
 def get_database_url() -> str:
     """Get the appropriate database URL based on environment.
-    
+
     Returns:
         Database URL string for PostgreSQL connection
     """

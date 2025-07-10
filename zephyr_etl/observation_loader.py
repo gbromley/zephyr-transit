@@ -7,17 +7,18 @@ from zephyr_db.models import Observation
 
 class ObservationLoader:
     """Loads weather observation data into the database.
-    
+
     Handles validation, chunking, and batch insertion of observation records
     from a Polars DataFrame into the observations table.
     """
+
     def __init__(self, observations_df: pl.DataFrame, chunksize: int = 5000) -> None:
         """Initialize the observation loader.
-        
+
         Args:
             observations_df: DataFrame with columns [station_id, variable_id, time, value]
             chunksize: Number of records to insert per batch
-            
+
         Raises:
             AssertionError: If DataFrame schema doesn't match expected format
         """
@@ -26,13 +27,13 @@ class ObservationLoader:
 
     def _validate_df(self, df: pl.DataFrame) -> pl.DataFrame:
         """Validate DataFrame schema and data types.
-        
+
         Args:
             df: DataFrame to validate
-            
+
         Returns:
             Validated DataFrame
-            
+
         Raises:
             AssertionError: If schema or data types don't match requirements
         """
@@ -44,10 +45,10 @@ class ObservationLoader:
 
     def _insert_observations(self, df: pl.DataFrame) -> int:
         """Insert a batch of observations into the database.
-        
+
         Args:
             df: DataFrame chunk to insert
-            
+
         Returns:
             Number of records inserted
         """
@@ -62,10 +63,10 @@ class ObservationLoader:
 
     def _bulk_insert_obs(self, df: pl.DataFrame) -> int:
         """Insert observations in chunks to avoid memory issues.
-        
+
         Args:
             df: Full DataFrame to insert
-            
+
         Returns:
             Total number of records inserted
         """
@@ -78,7 +79,7 @@ class ObservationLoader:
 
     def load(self) -> int:
         """Load all observations into the database.
-        
+
         Returns:
             Total number of records inserted, 0 if DataFrame is empty
         """
