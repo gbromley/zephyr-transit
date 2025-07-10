@@ -13,8 +13,12 @@ load_dotenv()
 _session_context: ContextVar[Optional[Session]] = ContextVar('_session_context', default=None)
 
 
-def get_database_url():
-    """Get the appropriate database URL based on environment."""
+def get_database_url() -> str:
+    """Get the appropriate database URL based on environment.
+    
+    Returns:
+        Database URL string for PostgreSQL connection
+    """
     # Check for DATABASE_URL first (for CI/CD environments)
     DATABASE_URL = os.getenv('DATABASE_URL')
 
