@@ -2,7 +2,7 @@ import polars as pl
 from sqlalchemy import insert
 
 from zephyr_db import zephyr_db_session
-from zephyr_db.models import Observation
+from zephyr_db.models import Observation, StationVariable
 
 
 class ObservationLoader:
@@ -43,7 +43,7 @@ class ObservationLoader:
         assert df.dtypes == [pl.Int64, pl.Int64, pl.Datetime, pl.Float64]
         return df
 
-    def _insert_observations(self, df: pl.DataFrame) -> int:
+    def _insert_observations(self, session, df: pl.DataFrame) -> int:
         """Insert a batch of observations into the database.
 
         Args:
@@ -52,16 +52,15 @@ class ObservationLoader:
         Returns:
             Number of records inserted
         """
-        with zephyr_db_session() as session:
-            data = df.to_dicts()
-            # Using stmt seems to be the sqlalchemy way
-            stmt = insert(Observation).values(data)
-            result = session.execute(stmt)
-            num_inserted_observations = result.rowcount
-            session.commit()
-            return num_inserted_observations
+        data = df.to_dicts()
+        # Using stmt seems to be the sqlalchemy way
+        stmt = insert(Observation).values(data)
+        result = session.execute(stmt)
+        num_inserted_observations = result.rowcount
 
-    def _bulk_insert_obs(self, df: pl.DataFrame) -> int:
+        return num_inserted_observations
+
+    def _bulk_insert_obs(self, session, df: pl.DataFrame) -> int:
         """Insert observations in chunks to avoid memory issues.
 
         Args:
@@ -73,9 +72,27 @@ class ObservationLoader:
         total_inserted = 0
 
         for frame in df.iter_slices(n_rows=self.chunksize):
-            total_inserted += self._insert_observations(frame)
+            total_inserted += self._insert_observations(session, frame)
 
         return total_inserted
+    
+    def _update_station_vars(self, session):
+        # Get existing combinations
+        existing = set(
+            session.query(StationVariable.station_id, StationVariable.variable_id).all()
+        )
+        
+        # Create new records
+        new_records = [
+            StationVariable(station_id=s_id, variable_id=v_id)
+            for s_id, v_id in self.obs_df.select(['station_id', 'variable_id']).unique().iter_rows()
+            if (s_id, v_id) not in existing
+        ]
+        
+        if new_records:
+            session.add_all(new_records)
+
+
 
     def load(self) -> int:
         """Load all observations into the database.
@@ -85,5 +102,13 @@ class ObservationLoader:
         """
         if self.obs_df.is_empty():
             return 0
+        
+        with zephyr_db_session() as session:
+            
+            total_inserted = self._bulk_insert_obs(session, self.obs_df)
 
-        return self._bulk_insert_obs(self.obs_df)
+            self._update_station_vars(session)
+
+            session.commit()
+        return total_inserted
+    
