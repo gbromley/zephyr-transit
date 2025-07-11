@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import REAL, BigInteger, ForeignKey, String
+from sqlalchemy import REAL, BigInteger, ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -28,3 +28,5 @@ class Station(Base):
     )
 
     source: Mapped['Source'] = relationship('Source', back_populates='stations')
+
+    __table_args__ = (UniqueConstraint('source_id', 'name', name='unique_station_per_source'),)
