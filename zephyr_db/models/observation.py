@@ -20,5 +20,6 @@ class Observation(Base):
     station: Mapped['Station'] = relationship('Station', back_populates='observations')
     variable: Mapped['Variable'] = relationship('Variable', back_populates='observations')
 
-    __table_args__ = (UniqueConstraint('station_id', 'variable_id','time', name='unique_observation'),
-        )
+    __table_args__ = (
+        UniqueConstraint('station_id', 'variable_id', 'time', name='unique_observation'),
+    )

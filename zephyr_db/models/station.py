@@ -29,6 +29,4 @@ class Station(Base):
 
     source: Mapped['Source'] = relationship('Source', back_populates='stations')
 
-    __table_args__ = (
-        UniqueConstraint('source_id', 'name', name='unique_station_per_source'),
-    )
+    __table_args__ = (UniqueConstraint('source_id', 'name', name='unique_station_per_source'),)

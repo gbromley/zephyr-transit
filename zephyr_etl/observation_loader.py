@@ -75,24 +75,20 @@ class ObservationLoader:
             total_inserted += self._insert_observations(session, frame)
 
         return total_inserted
-    
+
     def _update_station_vars(self, session):
         # Get existing combinations
-        existing = set(
-            session.query(StationVariable.station_id, StationVariable.variable_id).all()
-        )
-        
+        existing = set(session.query(StationVariable.station_id, StationVariable.variable_id).all())
+
         # Create new records
         new_records = [
             StationVariable(station_id=s_id, variable_id=v_id)
             for s_id, v_id in self.obs_df.select(['station_id', 'variable_id']).unique().iter_rows()
             if (s_id, v_id) not in existing
         ]
-        
+
         if new_records:
             session.add_all(new_records)
-
-
 
     def load(self) -> int:
         """Load all observations into the database.
@@ -102,13 +98,11 @@ class ObservationLoader:
         """
         if self.obs_df.is_empty():
             return 0
-        
+
         with zephyr_db_session() as session:
-            
             total_inserted = self._bulk_insert_obs(session, self.obs_df)
 
             self._update_station_vars(session)
 
             session.commit()
         return total_inserted
-    
