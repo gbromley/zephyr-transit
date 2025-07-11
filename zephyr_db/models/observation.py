@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import REAL, BigInteger, DateTime, ForeignKey
+from sqlalchemy import REAL, BigInteger, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -19,3 +19,6 @@ class Observation(Base):
 
     station: Mapped['Station'] = relationship('Station', back_populates='observations')
     variable: Mapped['Variable'] = relationship('Variable', back_populates='observations')
+
+    __table_args__ = (UniqueConstraint('station_id', 'variable_id','time', name='unique_observation'),
+        )
