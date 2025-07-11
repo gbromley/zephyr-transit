@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import polars as pl
 import pytest
 
-from zephyr_db.models import Observation, Source, Variable
+from zephyr_db.models import Observation, Source, Variable, StationVariable
 from zephyr_db.seed import seed_sources, seed_units, seed_variables
 from zephyr_etl.observation_loader import ObservationLoader
 from zephyr_etl.station_loader import StationLoader
@@ -122,3 +122,21 @@ def test_chunking_large_dataset(seeded_database, test_stations):
 
     assert inserted == n_obs
     assert seeded_database.query(Observation).count() == n_obs
+
+def test_station_variables_updated(seeded_database, test_stations):
+    """Test that station_variables table is populated when observations are loaded."""
+    wind_speed_id = seeded_database.query(Variable.id).filter(Variable.name == 'wind speed').scalar()
+    
+    # Load observations
+    observations_df = pl.DataFrame({
+        'station_id': [test_stations[0], test_stations[1]],
+        'variable_id': [wind_speed_id, wind_speed_id],
+        'time': [datetime.now()] * 2,
+        'value': [25.5, 30.2],
+    })
+    
+    ObservationLoader(observations_df).load()
+    
+    # Check station_variables was populated
+    count = seeded_database.query(StationVariable).count()
+    assert count == 2
