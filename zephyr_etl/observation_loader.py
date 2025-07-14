@@ -1,8 +1,13 @@
+import logging
+import time
+
 import polars as pl
 from sqlalchemy import insert
 
 from zephyr_db import zephyr_db_session
 from zephyr_db.models import Observation, StationVariable
+
+logger = logging.getLogger(__name__)
 
 
 class ObservationLoader:
@@ -24,6 +29,7 @@ class ObservationLoader:
         """
         self.obs_df = self._validate_df(observations_df)  # Simple defensive check
         self.chunksize = chunksize
+        logger.info(f'Initial number of observations to load: {len(self.obs_df)}')
 
     def _validate_df(self, df: pl.DataFrame) -> pl.DataFrame:
         """Validate DataFrame schema and data types.
@@ -57,6 +63,7 @@ class ObservationLoader:
         stmt = insert(Observation).values(data)
         result = session.execute(stmt)
         num_inserted_observations = result.rowcount
+        logger.info(f'Batch of {num_inserted_observations} observations loaded')
 
         return num_inserted_observations
 
@@ -70,10 +77,10 @@ class ObservationLoader:
             Total number of records inserted
         """
         total_inserted = 0
-
+        num_chunks = (len(df) + self.chunksize - 1) // self.chunksize
+        logger.info(f'Processing {num_chunks} batches of {self.chunksize} observations each')
         for frame in df.iter_slices(n_rows=self.chunksize):
             total_inserted += self._insert_observations(session, frame)
-
         return total_inserted
 
     def _update_station_vars(self, session):
@@ -86,7 +93,7 @@ class ObservationLoader:
             for s_id, v_id in self.obs_df.select(['station_id', 'variable_id']).unique().iter_rows()
             if (s_id, v_id) not in existing
         ]
-
+        logger.info(f'Added {len(new_records)} new station-variable combinations')
         if new_records:
             session.add_all(new_records)
 
@@ -97,12 +104,16 @@ class ObservationLoader:
             Total number of records inserted, 0 if DataFrame is empty
         """
         if self.obs_df.is_empty():
+            logger.warning('No observations to load - DataFrame is empty')
             return 0
 
+        start_time = time.time()
         with zephyr_db_session() as session:
             total_inserted = self._bulk_insert_obs(session, self.obs_df)
 
             self._update_station_vars(session)
 
             session.commit()
+            elapsed_time = time.time() - start_time
+            logger.info(f'Successfully loaded {total_inserted} observations in {elapsed_time:.2f}s')
         return total_inserted
