@@ -1,11 +1,14 @@
 import logging
+import time
+
 import polars as pl
 from sqlalchemy import insert
 
 from zephyr_db import zephyr_db_session
 from zephyr_db.models import Station
 
-logger.getLogger(__name__)
+logger = logging.getLogger(__name__)
+
 
 class StationLoader:
     """Class to handle loading stations into the database."""
@@ -42,7 +45,7 @@ class StationLoader:
                     )
                 else:
                     self._current_stations = result
-        logger.info(f'There are {len(self._current_stations)} stations in the database.')
+        logger.info(f'Found {len(self._current_stations)} existing stations in database')
         return self._current_stations
 
     def _stations_to_insert(self) -> pl.DataFrame:
@@ -68,9 +71,10 @@ class StationLoader:
         df = self._stations_to_insert()
 
         if df.is_empty():
-            logger.warning(f'Station dataframe is empty!')
+            logger.warning('No stations to insert - DataFrame is empty')
             return []
 
+        start_time = time.time()
         with zephyr_db_session() as session:
             try:
                 data = df.to_dicts()
@@ -81,11 +85,12 @@ class StationLoader:
                 session.commit()
                 # Reset current stations cache
                 self._current_stations = None
-                logger.info(f'Inserted {len(inserted_stations)} stations into the database.')
+                elapsed_time = time.time() - start_time
+                logger.info(f'Inserted {len(inserted_stations)} stations in {elapsed_time:.2f}s')
                 return inserted_stations
             except Exception:
                 # Safely rollback transaction if still active
-                logger.warning('Failure while inserting stations to the database!')
+                logger.error('Failed to insert stations into database', exc_info=True)
                 if session.is_active:
                     session.rollback()
                 raise
